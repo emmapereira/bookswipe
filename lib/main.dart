@@ -5,8 +5,17 @@ import 'screens/matches.dart';
 import 'screens/profile.dart';
 import 'models/app_state.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'person.dart';
+import 'boxes.dart';
 
-void main() {
+void main() async {
+  await Hive.initFlutter();
+  Hive.registerAdapter(PersonAdapter());
+  boxPersons = await Hive.openBox<Person>('personBox');
+
   final appState = AppState();
   appState.init();
   runApp(MyApp(appState: appState));
@@ -20,13 +29,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'WearWise',
+      title: 'BookSwipe',
       theme: ThemeData(
         primarySwatch: Colors.purple,
         bottomNavigationBarTheme:
             const BottomNavigationBarThemeData(selectedItemColor: Colors.black),
       ),
-      home: MyHomePage(title: 'WearWise', appState: appState),
+      home: MyHomePage(title: 'BookSwipe', appState: appState),
     );
   }
 }

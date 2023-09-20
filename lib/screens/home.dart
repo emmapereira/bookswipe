@@ -1,13 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:wearwise/boxes.dart';
 import 'package:wearwise/screens/newbook.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+import '../person.dart';
 
 class Home extends StatelessWidget {
   final List<String> selectedItems;
   final int currentIndex;
+  static FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   const Home(
       {Key? key, required this.selectedItems, required this.currentIndex})
       : super(key: key);
+
+  void showPersons() {
+    for (int i = 0; i < boxPersons.length; i++) {
+      Person person = boxPersons.getAt(i);
+      print(
+          'Person ${i.toString()} is named ${person.name} and is ${person.age.toString()} yo');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,6 +74,47 @@ class Home extends StatelessWidget {
                   ),
                 ),
               ),
+            ),
+          ),
+
+          Center(
+            child: ElevatedButton(
+              onPressed: () {
+                print('Trying to add a person!');
+                print('length is ${boxPersons.length}');
+                showPersons();
+                boxPersons.put(
+                  'key_${boxPersons.length}',
+                  Person(
+                    name: 'Mikkel',
+                    age: 19,
+                  ),
+                );
+              },
+              child: const Text('Add a person'),
+            ),
+          ),
+
+          Expanded(
+            child: ListView.builder(
+              itemCount: boxPersons.length,
+              itemBuilder: (BuildContext context, int index) {
+                Person person = boxPersons.getAt(index);
+                print("index is ${index}");
+                print(
+                    'Person ${index.toString()} is named ${person.name} and is ${person.age.toString()} yo');
+                return ListTile(
+                  leading: IconButton(
+                    onPressed: () {},
+                    icon: const Icon(
+                      Icons.remove,
+                    ),
+                  ),
+                  title: Text(person.name),
+                  subtitle: const Text('Name'),
+                  trailing: Text('age: ${person.age.toString()}'),
+                );
+              },
             ),
           ),
         ],
